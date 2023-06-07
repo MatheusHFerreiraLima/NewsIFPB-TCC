@@ -8,7 +8,7 @@ no terminal do Visual Studio do Windows:
 
 cmd
 py -3 -m venv .venv
-.\.venv\Scripts\activate.bat
+.\.venv\Scripts\activate.bat (talvez não dê pra ver, mas existe uma contra batta antes do ".venv", o que separa os dois pontos)
 pip install django
 pip install feedparser 
 django-admin startproject [nome do projeto]
