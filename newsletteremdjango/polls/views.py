@@ -1,8 +1,6 @@
-from django.shortcuts import render
 import feedparser
 from django.http import  HttpResponse
 import time
-import datetime
 from django.core.mail import send_mail
 from django.core.mail import EmailMultiAlternatives
 from django.template.loader import render_to_string
@@ -51,7 +49,7 @@ def enviar_email(request):
     html_content = render_to_string("polls/email.html", dados_email_view())
     text_content = strip_tags(html_content)
 
-    email = EmailMultiAlternatives('Newsletter IFPB teste', text_content, 'matheus.lima.7@academico.ifpb.edu.br', ['matheus123henrique80academico@gmail.com', 'tamires.santana@academico.ifpb.edu.br'])
+    email = EmailMultiAlternatives('Newsletter IFPB teste', text_content, 'matheus.lima.7@academico.ifpb.edu.br', ['matheus123henrique80academico@gmail.com'])
 
     email.attach_alternative(html_content, 'text/html')
     email.send()
