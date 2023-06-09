@@ -5,9 +5,14 @@ from django.core.mail import send_mail
 from django.core.mail import EmailMultiAlternatives
 from django.template.loader import render_to_string
 from django.utils.html import strip_tags
+from django.shortcuts import render
+
 
 
 feed_url = 'https://www.ifpb.edu.br/ifpb/pedrasdefogo/noticias/todas-as-noticias-do-campus-pedras-de-fogo/RSS'
+
+def teste(request):
+    return render(request, 'polls/html/index.html')
 
 def get_initial_time():
     return time.time()
@@ -43,16 +48,32 @@ def dados_email_view():
     context = {'dados': dados_list}
     return context
     
+# from django.core.files.base import ContentFile
+# from .models import EnviosEmails
+# def enviar_email():
+#     usuarios = Usuario.objects.all()
+
+#     dados_das_noticias = dados_email_view() 
+#     if dados_das_noticias != {'dados': []}:
+
+#         destinatarios = Usuario.objects.values_list('email', flat=True)
+#         html_content = render_to_string("polls/email.html", dados_das_noticias)
+#         text_content = strip_tags(html_content)
 
 
-def enviar_email(request):
-    html_content = render_to_string("polls/email.html", dados_email_view())
-    text_content = strip_tags(html_content)
 
-    email = EmailMultiAlternatives('Newsletter IFPB teste', text_content, 'naoresponda.newsifpb@gmail.com', ['matheus123henrique80academico@gmail.com', 'tamires.santana@academico.ifpb.edu.br'])
+#         email = EmailMultiAlternatives('Newsletter IFPB teste', text_content, 'naoresponda.newsifpb@gmail.com', bbc=destinatarios)
+#         email.attach_alternative(html_content, 'text/html')
 
-    email.attach_alternative(html_content, 'text/html')
-    email.send()
+#         try:    
+#             email.send()
+#             envio_emails = EnviosEmails.objects.create()
+#             return HttpResponse('E-mails enviados com sucesso!')
+        
+#         except Exception as e:
+#             return HttpResponse (f'Erro ao enviar e-mails: {str(e)}')
 
-    return HttpResponse(f'Olá, mundo')
-# Create your views here.
+#     else:
+
+#         return HttpResponse('Não há conteúdo para ser enviado para o e-mail. Portanto o e-mail não foi enviado')
+
