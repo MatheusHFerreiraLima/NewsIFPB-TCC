@@ -23,7 +23,7 @@ no terminal do Visual Studio do Windows:
         py manage.py startapp [nome do app]
         py manage.py runserver (para testar)
 
-Depois configura o Banco de dados no sqlite com um manage.py migrate e mange.py makemigrations
+Depois configura o Banco de dados no sqlite com um manage.py migrate e manage.py makemigrations
 
 Lembre-se de mudar a senha e o email dos settings.py. A senha é intransferível.
 
