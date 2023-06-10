@@ -14,6 +14,7 @@ no terminal do Visual Studio do Windows:
         .\.venv\Scripts\activate.bat (talvez não dê pra ver, mas existe uma contra batta antes do ".venv", o que separa os dois pontos)
         pip install django
         pip install feedparser 
+        pip install pytz (eu acho)
 
     para testar o projeto (dentro do venv):
 
@@ -21,6 +22,8 @@ no terminal do Visual Studio do Windows:
         cd [nome do projeto]
         py manage.py startapp [nome do app]
         py manage.py runserver (para testar)
+
+Depois configura o Banco de dados no sqlite com um manage.py migrate e mange.py makemigrations
 
 Lembre-se de mudar a senha e o email dos settings.py. A senha é intransferível.
 
