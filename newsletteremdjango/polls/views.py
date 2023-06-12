@@ -11,10 +11,39 @@ from .models import EnviosEmails
 from .models import Usuario
 
 
+
 feed_url = 'https://www.ifpb.edu.br/ifpb/pedrasdefogo/noticias/todas-as-noticias-do-campus-pedras-de-fogo/RSS'
+
+
+#testagem com forms.py:
+#talvez essa próxima linha de import esteja errada também, não sei.
+from newsletteremdjango.forms import UsuarioForm
+def processa_formulario(request):
+    data = {}
+    data['form'] = UsuarioForm()
+    return render(request, 'polls/html/index.html', data)
+
+#testagem com redirecionamento de url (os dois estão incompletos, mas eu testaria o com forms.py):
+# def processa_formulario(request):
+#     if request.method == 'POST':
+#         email = request.POST.get('email')
+#         try:
+#             usuario = Usuario(email=email)
+#             usuario.full_clean()  # Validação do email
+#             usuario.save()  # Salva no banco de dados
+#             success_message = 'Seu e-mail foi cadastrado com sucesso!'
+#             return render(request, 'polls/html/index.html', {'success_message': success_message})
+#         except ValidationError as e:
+#             error_message = str(e)
+#             return render(request, 'polls/html/index.html', {'error_message': error_message})
+#     return render(request, 'polls/html/index.html')
 
 def teste(request):
     return render(request, 'polls/html/index.html')
+
+
+
+
 
 def get_initial_time():
     return time.time()
@@ -62,6 +91,8 @@ def enviar_email(request):
             num_indices = dados_das_noticias['num_indices']  # Obtém o número de índices da resposta do email
             resposta_bd = f"{num_indices} notícias foram geradas essa semana"  # Cria a resposta para o banco de dados
             envio_emails = EnviosEmails.objects.create(resposta=resposta_bd)  # Salva a resposta no banco de dados EnviosEmails
+
+            envio_emails.destinatarios.set(Usuario.objects.all()) # Cria associações com os destinatários
             return HttpResponse('E-mails enviados com sucesso!')
         
         except Exception as e:
@@ -72,4 +103,5 @@ def enviar_email(request):
         resposta_bd = f"{num_indices} notícias foram geradas essa semana"  # Cria a resposta para o banco de dados
         envio_emails = EnviosEmails.objects.create(resposta=resposta_bd)
         return HttpResponse('Não há conteúdo essa semana para ser enviado por e-mail. Portanto, o e-mail não foi enviado.')
+
 

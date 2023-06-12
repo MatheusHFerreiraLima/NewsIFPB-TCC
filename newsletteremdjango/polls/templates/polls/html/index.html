@@ -1,5 +1,8 @@
 {% load static %}
 
+<!-- estava tentando fazer com um {% url 'processa_formulario' %}, mas deu erro sempre. 
+Também tentei com um {{forms.email}}, mas acabei por não entender o código. -->
+
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
@@ -12,10 +15,16 @@
   <div class="container">
     <img src="{% static 'imagens/campuspedrasdefogo.png' %}" alt="Campus Pedras de Fogo - Imagem"> 
     <h1>Receba nossa newsletter:</h1>
-    <form class="form-group" id="email-form">
-      <input type="email" id="email-input" placeholder="Digite seu e-mail" oninput="handleInputChange(event)">
+    <form class="form-group" id="email-form" method="pst" action="{% url 'processa_formulario' %}">
+      {% csrf_token %}
+      <input type="email" id="email-input" name="email" placeholder="Digite seu e-mail" oninput="handleInputChange(event)">
       <button type="submit" id="botao-inscricao" class="botao-inscricao" disabled>Inscrever-se</button>
     </form>
+    {% if success_message %}
+      <div id="mensagemacerto">{{ success_message }} </div>
+    {% elif error_message %}
+      <div id="mensagemerro"> {{ error_message }} </div>
+    {% endif %}
   </div>
 <script src="{% static 'js/script.js' %}"> </script>
 </body>

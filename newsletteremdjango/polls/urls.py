@@ -8,5 +8,6 @@ urlpatterns = [
     # path('', views.get_initial_time, name="get_initial_time"),
     path('enviar/', views.enviar_email, name="enviar_email"),
     # path('', views.envia_email_viewww, name="envia_email_viewww"),
-    path ('teste', views.teste, name="teste"),
+    path ('teste/', views.teste, name="teste"),
+    path('processa_formulario/', views.processa_formulario, name="processa_formulario"),
 ]
