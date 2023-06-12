@@ -1,13 +1,16 @@
 from django.urls import path
 from . import views
 
+
+# o nome de toda view é o (app_name:name), segundo Pedrinho, youtuber de 13 anos de idade
 app_name = 'polls' 
 urlpatterns = [
-    # path('', views.dados_email_view, name="dados_email_view"),
-    # path('', views.iterate_entries, name="iterate_entries"),
-    # path('', views.get_initial_time, name="get_initial_time"),
+    path('oi/', views.oi, name="oi"),
     path('enviar/', views.enviar_email, name="enviar_email"),
-    # path('', views.envia_email_viewww, name="envia_email_viewww"),
     path ('teste/', views.teste, name="teste"),
-    path('processa_formulario/', views.processa_formulario, name="processa_formulario"),
+    # path('processa_formulario/', views.processa_formulario, name="processa_formulario"),
+    path('create/', views.UsuarioCreate.as_view(), name='create'),
+    # path('deletar', views.deletar_usuarios.as_view(), name='deletar'),
+    path('validacao/', views.validacao, name='validacao')
+
 ]

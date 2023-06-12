@@ -1,0 +1,46 @@
+<!-- <!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>incrição da newsletter</title>
+</head>
+<body>
+    <h1>Cadastro da newsletter</h1>
+    <form method="post" action=".">
+        {% csrf_token %}
+        {{ form }}
+        <input type="submit">
+        <input type="reset" value="restar" onclick="location.href = '{% url 'polls:validacao' %}'">
+
+    </form>
+</body>
+</html> -->
+
+
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Newsletter</title>
+  <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+<body>
+  <div class="container">
+    <img src="{% static 'imagens/campuspedrasdefogo.png' %}" alt=""> 
+    <h1>Receba nossa newsletter:</h1>
+    <form class="form-group" method="post" action=".">
+        {% csrf_token %}
+
+        
+        {{form.email}}
+      <input type="submit" id="botao-inscricao" value="Inscrever-se"class="botao-inscricao" disabled>
+    </form>
+  </div>
+<script src="{% static 'js/script.js' %}"> </script>
+</body>
+</html>
+

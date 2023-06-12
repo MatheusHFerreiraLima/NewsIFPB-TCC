@@ -1,0 +1,97 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8"> <!--Possivelmente eu vou ter que remover essas três tags-->
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{% static 'css/email.css' %}">
+
+</head>
+<body>
+
+    <table>
+
+        
+        <th>
+            <tr>
+                <td id ='cabecalho'>
+                    <h2>
+                        <strong>
+                            <a href="https://www.ifpb.edu.br/pedrasdefogo" target="_blank" >
+                                <img src="https://github.com/MatheusHFerreiraLima/HTML-CSS/blob/4dc60c5502c7fc7e18127c37b38ab554651dd671/imagens/whatsapp-logo.jpg" alt="IFPB - CAMPUS PEDRAS DE FOGO"> 
+                            </a>
+                            <a id="newsletter" href="#" target="_blank" >
+                                NEWSLETTER
+                            </a>
+                        </strong>
+                    </h2>
+                </td>
+            </tr>
+        </th>
+        
+        <tr>
+            <td id="espacamento1"></td>
+        </tr>
+
+    
+        <tr>
+            <td id="corpo">
+                
+                {% for dado in dados %}
+                    <div id="noticias_div">
+                        <h2>
+                            <a href="{{dado.url_noticia}}" target="_blank">
+                                <img src="{{dado.img_href}}" alt="{{dado.img_alt}}">
+                                <span> 
+                                    {{dado.titulo_noticia}}
+                                </span>
+                            </a>
+                            <p>
+                                {{dado.noticia_descricao}}
+                            </p>
+                        </h2>
+                    </div>
+                {% endfor %}
+                
+            </td>
+        </tr>
+
+        <tr>
+            <td id="rodape">
+                <p>
+                    IFPB - Pedras de Fogo 
+                    <br>
+                    CEP: 58382-000
+                    <br>
+                    Fone: +55 (83) 991247844 <img id="whatsapp" src="https://github.com/MatheusHFerreiraLima/HTML-CSS/blob/main/imagens/whatsapp-logo.jpg?raw=true" alt="WhatsApp">
+                    <br>
+                    E-mail: <a href="mailto:homemaranhaex@gmail.com" target="_blank"> homemaranhaex@gmail.com</a>
+                </p>
+            </td>
+        </tr>
+    
+    
+        <tr>
+            <td id="espacamento2"> 
+            
+            </td>
+        </tr>
+    
+        <tr>
+            <td id="avisos">
+                <p>
+                    Você recebeu essa mensagem porque está inscrito na lista "Newsletter IFPB - Pedras de Fogo".
+                    <br> <br>
+                    Para cancelar sua inscrição nessa lista e parar de receber os e-mails envie um e-mail para <a href="mailto:naoresponda.newsifpb@gmail.com" target="_blank">naoresponda.newsifpb@gmail.com</a> ou acesse o site:
+                    <br> <br>
+                    <a href="https://ifpb.edu.br" target="_blank">https://ifpb.edu.br</a>
+                </p>
+            </td>
+        </tr>
+
+    </table>
+
+</body>
+</html>

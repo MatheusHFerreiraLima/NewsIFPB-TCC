@@ -1,0 +1,137 @@
+body {
+    border: 0px; 
+    padding: 0px; 
+    margin: 0px;
+}
+
+    table {
+        margin: auto; 
+        border-collapse: collapse;
+    }    
+
+    td#cabecalho {
+        min-width:320px; 
+        max-width: 800px;
+        border-style: solid; 
+        border-width: 1px; 
+        border-color: rgb(221,221,221); 
+        text-align: center;
+    }
+
+    td#cabecalho img {
+    display: block;
+    margin: auto;
+    width: 188px;
+    padding-bottom: 20px;
+    }
+
+    a#newsletter {
+        text-decoration: none; 
+        color: #0F1A20; 
+        font-family: open_sansbold,arial,helvetica,sans-serif;
+        font-size: 26px;
+    }
+
+    td#espacamento1 {
+        border-style: solid; 
+        border-width: 1px; 
+        border-color: rgb(221,221,221); 
+        min-width: 320px; 
+        max-width: 800px; 
+        padding-bottom: 2em;
+    }
+
+    td#corpo {
+        min-width:320px; 
+        max-width: 800px; 
+        border-style: solid;
+        border-width: 1px;
+        border-color:rgb(221,221,221);
+        padding-left: 1em;
+        padding-right: 1em;
+    }
+
+    div#noticias_div {
+        padding-left: 1.8em; 
+        border-left-width: 1px; 
+        border-left-style: dotted;
+        border-left-color:rgb(214,214,214); 
+        margin-bottom: 40px
+    }
+
+    div#noticias_div > h2 {
+        font-family: arial,helvetica,sans-serif; 
+        font-size: 1.3em;
+    }
+
+    div#noticias_div a {
+    text-decoration: none; 
+    color: rgb(23,41,56);
+    }
+
+    div#noticias_div img {
+    height: 73px; 
+    width: 128px; 
+    border-radius: 5px; 
+    border:0px; 
+    float: left;
+    margin-right: 1em;
+    margin-bottom: 0.5em; 
+    font-size: small; 
+    font-family: Arial,Helvetica,sans-serif; 
+    line-height: 1.5; 
+    font-weight: lighter;
+    }
+
+    div#noticias_div span {
+        line-height: 1.3em;
+    }
+
+    div#noticias_div p {
+    padding-top: 16px; 
+    font-size: 13.728px; 
+    font-family: arial,helvetica,sans-serif; 
+    font-weight: lighter; 
+    color: rgb(23,41,56); 
+    line-height: 1.8em;
+    }
+
+    td#rodape {
+        min-width:320px; 
+        max-width: 800px; 
+        border-style: solid; 
+        border-width: 1px; 
+        border-color:rgb(221,221,221);  
+        text-align: right; padding-right: 1em;
+    }
+
+    td#rodape p {
+    margin-top: 16px; 
+    margin-bottom: 8px;
+    }
+
+    img#whatsapp {
+        width: 18px;
+        height: 17px;
+        padding: 0px;
+    }
+
+    td#espacamento2 {
+    min-width: 320px; 
+    max-width: 800px; 
+    padding-bottom: 130px;
+    }
+
+    td#avisos{
+    min-width: 320px; 
+    max-width: 800px; 
+    border-top-width: 1px; 
+    border-top-style: solid; 
+    border-top-color: black; 
+    padding-left: 5px; 
+    padding-top: 32px; 
+    padding-bottom: 32px; 
+    font-family: Arial,Helvetica,sans-serif; 
+    font-size: small; 
+    line-height: 1.5;
+    }
