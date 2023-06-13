@@ -12,7 +12,17 @@ class Command(BaseCommand):
 
         pessoas_deletadas = []
         pessoas_nao_deletadas = []
-
+        
+        #Lista de caixas:
+        # Mailbox Name: INBOX
+        # Mailbox Name: [Gmail]
+        # Mailbox Name: [Gmail]/All Mail
+        # Mailbox Name: [Gmail]/Drafts
+        # Mailbox Name: [Gmail]/Important
+        # Mailbox Name: [Gmail]/Sent Mail
+        # Mailbox Name: [Gmail]/Spam
+        # Mailbox Name: [Gmail]/Starred
+        # Mailbox Name: [Gmail]/Trash
         caixas = ['INBOX','[Gmail]/Spam']
         
         for caixa in caixas:
