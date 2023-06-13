@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <h1>vamo, pelo amor de Deus</h1>
+
+    {% if pessoas_deletadas %}
+        <h2>Pessoas Deletadas:</h2>
+            <ul>
+            {% for email in pessoas_deletadas %}
+                <li>{{ email }}</li>
+            {% endfor %}
+            </ul>
+    {% endif %}
+
+    {% if pessoas_nao_deletadas %}
+        <h2>Pessoas Não Deletadas:</h2>
+            <ul>
+            {% for email in pessoas_nao_deletadas %}
+                <li>{{ email }}</li>
+            {% endfor %}
+            </ul>
+    {% endif %}
+
+</body>
+</html>

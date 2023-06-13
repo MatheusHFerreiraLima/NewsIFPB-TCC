@@ -14,42 +14,6 @@ from .models import Usuario
 
 feed_url = 'https://www.ifpb.edu.br/ifpb/pedrasdefogo/noticias/todas-as-noticias-do-campus-pedras-de-fogo/RSS'
 
-
-#testagem com forms.py:
-#talvez essa próxima linha de import esteja errada também, não sei.
-# from newsletteremdjango.forms import UsuarioForm
-# def processa_formulario(request):
-#     data = {}
-#     data['form'] = UsuarioForm()
-#     return render(request, 'polls/index.html', data)
-
-#testagem com redirecionamento de url (os dois estão incompletos, mas eu testaria o com forms.py):
-# def processa_formulario(request):
-#     if request.method == 'POST':
-#         email = request.POST.get('email')
-#         try:
-#             usuario = Usuario(email=email)
-#             usuario.full_clean()  # Validação do email
-#             usuario.save()  # Salva no banco de dados
-#             success_message = 'Seu e-mail foi cadastrado com sucesso!'
-#             return render(request, 'polls/index.html', {'success_message': success_message})
-#         except ValidationError as e:
-#             error_message = str(e)
-#             return render(request, 'polls/index.html', {'error_message': error_message})
-#     return render(request, 'polls/index.html')
-
-# def teste(request):
-#     return render(request, 'polls/index.html')
-
-def teste(request):
-    try:
-        ana = deletar_usuarios()
-        return HttpResponse('deu certo')
-    except Exception as e:
-            return HttpResponse(f'Erro ao excluir os e-mails: {str(e)}')
-
-
-
 def get_initial_time():
     return time.time()
 
@@ -109,49 +73,8 @@ def enviar_email(request):
         envio_emails = EnviosEmails.objects.create(resposta=resposta_bd)
         return HttpResponse('Não há conteúdo essa semana para ser enviado por e-mail. Portanto, o e-mail não foi enviado.')
 
-import imaplib
-import email
 
-from django.core.exceptions import ObjectDoesNotExist
-
-
-def deletar_usuarios():
-    # Conectar-se ao servidor IMAP
-    mail = imaplib.IMAP4_SSL('imap.gmail.com')
-    mail.login('naoresponda.newsifpb@gmail.com', 'dubzukogeeyyfyyr')
-
-    # Selecionar a caixa de entrada
-    mail.select('inbox')
-
-    # Pesquisar e-mails não lidos
-    status, response = mail.search(None, 'UNSEEN')
-
-    if status == 'OK':
-        email_ids = response[0].split()
-        for email_id in email_ids:
-            # Obter o conteúdo do e-mail
-            status, response = mail.fetch(email_id, '(RFC822)')
-            if status == 'OK':
-                raw_email = response[0][1]
-                msg = email.message_from_bytes(raw_email)
-
-                # Obter o endereço de e-mail do remetente
-                remetente = msg['From']
-
-                try:
-                    # Descadastrar o usuário correspondente no banco de dados
-                    usuario = Usuario.objects.get(email=remetente)
-                    usuario.delete()
-                    
-                except ObjectDoesNotExist:
-                    return HttpResponse(f'O usuário não existe ou foi descadastrado: {str(e)}')
-                # Marcar o e-mail como lido
-                mail.store(email_id, '+FLAGS', '\\Seen')
-
-    # Fechar a conexão com o servidor IMAP
-    mail.logout()
-
-from django.views.generic import CreateView
+from django.views.generic import CreateView, DeleteView
 from django.urls import reverse_lazy
 class UsuarioCreate (CreateView):
     model = Usuario
@@ -169,6 +92,15 @@ def validacao(request):
     except ValidationError as e:
         error_message = str(e)
         return render(request, 'polls/index.html', {'error_message': error_message})
+
+from django.shortcuts import render
+from .email_utils import Command
+
+def deletar_usuario(request):
+    command = Command()
+    context = command.handle()
+    return render(request, 'polls/delete_users_from_unread_emails.html', context)
+
         
 
 
