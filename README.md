@@ -15,7 +15,7 @@ no terminal do Visual Studio do Windows:
         pip install django
         pip install feedparser 
         pip install pytz (eu acho)
-        pip install imapclient (em teste ainda)
+        pip install imapclient 
 
     para testar o projeto (dentro do venv):
 

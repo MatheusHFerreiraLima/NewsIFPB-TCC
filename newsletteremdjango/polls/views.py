@@ -1,14 +1,15 @@
-import feedparser
-from django.http import  HttpResponse
-import time
-from django.core.mail import send_mail
-from django.core.mail import EmailMultiAlternatives
 from django.template.loader import render_to_string
-from django.utils.html import strip_tags
-from django.shortcuts import render
 from django.core.files.base import ContentFile
+from django.utils.html import strip_tags
+from django.core.mail import EmailMultiAlternatives
+from django.core.mail import send_mail
+from django.shortcuts import render
+from .email_utils import Command
+from django.http import  HttpResponse
 from .models import EnviosEmails
 from .models import Usuario
+import feedparser
+import time
 
 
 
@@ -93,17 +94,11 @@ def validacao(request):
         error_message = str(e)
         return render(request, 'polls/index.html', {'error_message': error_message})
 
-from django.shortcuts import render
-from .email_utils import Command
+
 
 def deletar_usuario(request):
     command = Command()
     context = command.handle()
     return render(request, 'polls/delete_users_from_unread_emails.html', context)
 
-        
-
-
-            
-            
         
