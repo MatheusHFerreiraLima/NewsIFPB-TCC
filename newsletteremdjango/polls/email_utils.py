@@ -13,50 +13,30 @@ class Command(BaseCommand):
         pessoas_deletadas = []
         pessoas_nao_deletadas = []
 
+        caixas = ['INBOX','[Gmail]/Spam']
+        
+        for caixa in caixas:
         # Buscar na caixa de entrada
-        server.select_folder('INBOX')
-        messages_inbox = server.search(['UNSEEN'])
+            server.select_folder(caixa)
+            messagens = server.search(['UNSEEN'])
 
         # Extrair remetentes e excluir usuários da caixa de entrada
-        for msgid, data in server.fetch(messages_inbox, ['ENVELOPE']).items():
-            envelope = data[b'ENVELOPE']
+            for msgid, data in server.fetch(messagens, ['ENVELOPE']).items():
+                envelope = data[b'ENVELOPE']
 
-            sender_name = envelope.sender[0].name.decode('utf-8') if envelope.sender[0].name else ""
-            sender_email = envelope.sender[0].mailbox.decode('utf-8') + "@" + envelope.sender[0].host.decode('utf-8')
-
-            # Deletar o usuário com base no e-mail do remetente
-            try:
-                usuario = Usuario.objects.get(email=sender_email)
-                usuario.delete()
-                pessoas_deletadas.append(sender_email)
-            except Usuario.DoesNotExist:
-                pessoas_nao_deletadas.append(sender_email)
-
-        server.set_flags(messages_inbox, [b'\\Seen'])
-        # Buscar na caixa de spam
-        server.select_folder('[Gmail]/Spam')
-        messages_spam = server.search(['UNSEEN'])
-
-        # Extrair remetentes e excluir usuários da caixa de spam
-        for msgid, data in server.fetch(messages_spam, ['ENVELOPE']).items():
-            envelope = data[b'ENVELOPE']
-
-            sender_name = envelope.sender[0].name.decode('utf-8') if envelope.sender[0].name else ""
-            sender_email = envelope.sender[0].mailbox.decode('utf-8') + "@" + envelope.sender[0].host.decode('utf-8')
+                sender_name = envelope.sender[0].name.decode('utf-8') if envelope.sender[0].name else ""
+                sender_email = envelope.sender[0].mailbox.decode('utf-8') + "@" + envelope.sender[0].host.decode('utf-8')
 
             # Deletar o usuário com base no e-mail do remetente
-            try:
-                usuario = Usuario.objects.get(email=sender_email)
-                usuario.delete()
-                pessoas_deletadas.append(sender_email)
-            except Usuario.DoesNotExist:
-                pessoas_nao_deletadas.append(sender_email)
+                try:
+                    usuario = Usuario.objects.get(email=sender_email)
+                    usuario.delete()
+                    pessoas_deletadas.append(sender_email)
+                except Usuario.DoesNotExist:
+                    pessoas_nao_deletadas.append(sender_email)
 
-
-        # Marcar os e-mails como lidos na caixa de spam
-        server.select_folder('[Gmail]/Spam')
-        server.set_flags(messages_spam, [b'\\Seen'])
-
+            server.set_flags(messagens, [b'\\Seen'])
+        
         # Fechar a conexão IMAP
         server.logout()
 
