@@ -66,17 +66,3 @@ body {
     img{
     height: 140px;
     }
-  
-  div#mensagemacerto {
-    color: rgba(74, 228, 74, 0.849);
-    margin-top: 36px;
-    font-weight: bolder;
-    font-size: larger;
-   }
-
-  div#mensagemerro {
-    color: red;
-    margin-top: 36px;
-    font-weight: bolder;
-    font-size: larger;
-   }

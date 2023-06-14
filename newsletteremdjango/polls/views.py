@@ -1,15 +1,18 @@
 from django.template.loader import render_to_string
 from django.core.files.base import ContentFile
+from django.views.generic import CreateView 
 from django.utils.html import strip_tags
 from django.core.mail import EmailMultiAlternatives
 from django.core.mail import send_mail
 from django.shortcuts import render
 from .email_utils import Command
 from django.http import  HttpResponse
+from django.urls import reverse_lazy
 from .models import EnviosEmails
 from .models import Usuario
 import feedparser
 import time
+
 
 
 
@@ -75,30 +78,17 @@ def enviar_email(request):
         return HttpResponse('Não há conteúdo essa semana para ser enviado por e-mail. Portanto, o e-mail não foi enviado.')
 
 
-from django.views.generic import CreateView, DeleteView
-from django.urls import reverse_lazy
+
 class UsuarioCreate (CreateView):
     model = Usuario
     fields ='__all__'
-    success_url = reverse_lazy('polls:validacao')
+    success_url = reverse_lazy('polls:olhadescricao')
 
-def oi(request):
-    return HttpResponse('oi')
-
-def validacao(request):
-    try:
-        success_message = 'Seu e-mail foi cadastrado com sucesso!'
-        return render(request, 'polls/index.html', {'success_message': success_message})
-
-    except ValidationError as e:
-        error_message = str(e)
-        return render(request, 'polls/index.html', {'error_message': error_message})
-
-
+olhadescricao = 'tamires, muda esse nome no reverse_lazy para configurar TUDO plmds e apaga essa var. Esse valor no reverse_lazy indica o caminho do urls.py que o html vai tomar ao receber o valor e processá-lo no banco. No entanto, para isso tem a lógica do que foi aprovado ou não, e isso eu deixo em tua mão dps que tu configurar o bendito usuario_form.html para fazer o crud e ajustar o css, html (que possivelmente tu vai fazer modificações) e o javascript. Boa sorte, hahaaha'
 
 def deletar_usuario(request):
     command = Command()
     context = command.handle()
-    return render(request, 'polls/delete_users_from_unread_emails.html', context)
+    return render(request, 'polls/deletar_usuarios_emails_n_lidos.html', context)
 
         

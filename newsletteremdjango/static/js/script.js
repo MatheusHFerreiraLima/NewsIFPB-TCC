@@ -1,15 +1,15 @@
 function validateEmail(email) {
-    const re = /\S+@\S+\.\S+/;
-    return re.test(email);
-  }
+  const re = /\S+@\S+\.\S+/;
+  return re.test(email);
+}
 
-  function handleInputChange(event) {
-    const emailInput = event.target;
-    const subscribeBtn = document.getElementById("botao-inscricao");
+function handleInputChange(event) {
+  const emailInput = event.target;
+  const subscribeBtn = document.getElementById("botao-inscricao");
 
-    if (validateEmail(emailInput.value)) {
-      subscribeBtn.disabled = false;
-    } else {
-      subscribeBtn.disabled = true;
-    }
+  if (validateEmail(emailInput.value)) {
+    subscribeBtn.disabled = false;
+  } else {
+    subscribeBtn.disabled = true;
   }
+}
