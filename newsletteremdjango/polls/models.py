@@ -6,10 +6,6 @@ import pytz
 class Usuario(models.Model):
     email = models.EmailField(primary_key=True)
 
-    def clean(self):
-        existing_user = Usuario.objects.filter(email=self.email).exists()
-        if existing_user:
-            raise ValidationError('Este e-mail já está cadastrado.')
     def __str__(self):
         return self.email
 

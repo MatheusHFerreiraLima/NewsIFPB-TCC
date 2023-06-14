@@ -8,4 +8,5 @@ urlpatterns = [
     path('enviar/', views.enviar_newletter, name="enviar_newletter"),
     path('', views.UsuarioCreate.as_view(), name='create'),
     path('deletar_usuario/', views.deletar_usuario, name='deletar_usuario'),
+    path('oi/', views.oi, name='oi'),
 ]

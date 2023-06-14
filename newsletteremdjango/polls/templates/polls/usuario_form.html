@@ -9,6 +9,14 @@
   <link rel="stylesheet" href="{% static 'css/criar_usuario_pag.css' %}">
 </head>
 <body>
+  <form method="post">
+    {% csrf_token %}
+    {{ form.email }}
+    {{ form.email.errors }}
+    {{ form.non_field_errors }}
+    {{ form.errors }}
+    <button type="submit">Save changes</button>
+</form>
   <div class="container">
     <img src="{% static 'imagens/campuspedrasdefogo.png' %}" alt="IFPB - CAMPUS PEDRAS DE FOGO"> 
     <h1>Receba nossa newsletter:</h1>
