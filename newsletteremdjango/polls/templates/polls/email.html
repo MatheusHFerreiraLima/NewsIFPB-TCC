@@ -42,14 +42,14 @@
                 {% for dado in dados %}
                     <div id="noticias_div">
                         <h2>
-                            <a href="{{dado.url_noticia}}" target="_blank">
+                            <a href="{{dado.url}}" target="_blank">
                                 <img src="{{dado.img_href}}" alt="{{dado.img_alt}}">
                                 <span> 
-                                    {{dado.titulo_noticia}}
+                                    {{dado.titulo}}
                                 </span>
                             </a>
                             <p>
-                                {{dado.noticia_descricao}}
+                                {{dado.descricao}}
                             </p>
                         </h2>
                     </div>

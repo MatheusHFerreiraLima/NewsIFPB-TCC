@@ -18,39 +18,35 @@ import time
 
 feed_url = 'https://www.ifpb.edu.br/ifpb/pedrasdefogo/noticias/todas-as-noticias-do-campus-pedras-de-fogo/RSS'
 
-def get_initial_time():
+def obter_tempo_inicial():
     return time.time()
 
 
-def iterate_entries():
+def ler_noticias():
     rss = feedparser.parse(feed_url)
-    entries = rss.entries
-    data_list = []
-    for entry in entries:
-        published_time = time.mktime(entry.published_parsed)
-        if published_time > 1683936034.0:
-            data = {
-                'url_noticia': entry['link'],
-                'titulo_noticia': entry['title'],
+    noticias = rss.entries
+    noticias_list = []
+    for noticia in noticias:
+        tempo_de_publicacao = time.mktime(noticia.published_parsed)
+        if tempo_de_publicacao > 1683936034.0:
+            dados_noticia = {
+                'url': noticia['link'],
+                'titulo': noticia['title'],
                 'img_href': None,
-                'img_alt': entry['title'].upper(),
-                'noticia_descricao': entry['summary']
+                'img_alt': noticia['title'].upper(),
+                'descricao': noticia['summary']
             }
-            data_list.append(data)
-    initial_time = get_initial_time()
-    return data_list
+            noticias_list.append(dados_noticia)
+
+    tempo_inicial = obter_tempo_inicial()
+
+    num_indices = len(noticias_list) 
+    context = {'dados': noticias_list, 'num_indices': num_indices}
     
-
-def dados_email_view():
-    dados_chamada = iterate_entries()
-    dados_list = []
-    dados_list.extend(dados_chamada)  # Adiciona os dados obtidos da função iterate_entries
-    num_indices = len(dados_list)  # Conta o número de índices na lista dados_list
-    context = {'dados': dados_list, 'num_indices': num_indices}  # Inclui o número de índices no contexto
-    return context 
-
-def enviar_email(request):
-    dados_das_noticias = dados_email_view()
+    return context
+    
+def enviar_newletter(request):
+    dados_das_noticias = ler_noticias()
     if dados_das_noticias['dados'] != []:
         destinatarios = Usuario.objects.values_list('email', flat=True)
         html_content = render_to_string("polls/email.html", dados_das_noticias)
