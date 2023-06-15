@@ -83,14 +83,16 @@ class UsuarioCreate (CreateView):
 def oi(request):
     return HttpResponse('oi')
 
-#TODO 
-
-olhadescricao = 'tamires, muda esse nome no reverse_lazy para configurar TUDO plmds e apaga essa var. Esse valor no reverse_lazy indica o caminho do urls.py que o html vai tomar ao receber o valor e processá-lo no banco. No entanto, para isso tem a lógica do que foi aprovado ou não, e isso eu deixo em tua mão dps que tu configurar o bendito usuario_form.html para fazer o crud e ajustar o css, html (que possivelmente tu vai fazer modificações) e o javascript. Boa sorte, hahaaha'
+#TODO tamires, muda esse nome no reverse_lazy para configurar TUDO plmds e apaga essa var. Esse valor no reverse_lazy indica o caminho do urls.py que o html vai tomar ao receber o valor e processá-lo no banco. No entanto, para isso tem a lógica do que foi aprovado ou não, e isso eu deixo em tua mão dps que tu configurar o bendito usuario_form.html para fazer o crud e ajustar o css, html (que possivelmente tu vai fazer modificações) e o javascript. Boa sorte, hahaaha'
 
 def deletar_usuario(request):
     command = Command()
     context = command.handle()
     return render(request, 'polls/deletar_usuarios_emails_n_lidos.html', context)
+
+def projeto2(request):
+    teste = ler_noticias()
+    return render(request, 'polls/projeto2-programacao-2-matheus-e-tamires.html', teste)
     
 
         
