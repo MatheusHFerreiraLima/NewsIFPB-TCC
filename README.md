@@ -16,6 +16,8 @@ no terminal do Visual Studio do Windows:
         pip install feedparser 
         pip install pytz (eu acho)
         pip install imapclient 
+        pip install beautifulsoup4 (provavelmente, por causa da leitura do rss da câmara)
+
 
     para testar o projeto (dentro do venv):
 

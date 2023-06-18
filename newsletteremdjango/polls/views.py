@@ -14,15 +14,12 @@ import feedparser
 import time
 
 
-
-
-feed_url = 'https://www.ifpb.edu.br/ifpb/pedrasdefogo/noticias/todas-as-noticias-do-campus-pedras-de-fogo/RSS'
-
 def obter_tempo_inicial():
     return time.time()
 
 
 def ler_noticias():
+    feed_url = 'https://www.ifpb.edu.br/ifpb/pedrasdefogo/noticias/todas-as-noticias-do-campus-pedras-de-fogo/RSS'
     rss = feedparser.parse(feed_url)
     noticias = rss.entries
     noticias_list = []
@@ -89,10 +86,3 @@ def deletar_usuario(request):
     command = Command()
     context = command.handle()
     return render(request, 'polls/deletar_usuarios_emails_n_lidos.html', context)
-
-def projeto2(request):
-    teste = ler_noticias()
-    return render(request, 'polls/projeto2-programacao-2-matheus-e-tamires.html', teste)
-    
-
-        
