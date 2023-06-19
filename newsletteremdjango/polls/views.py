@@ -1,13 +1,14 @@
 from django.template.loader import render_to_string
 from django.core.files.base import ContentFile
+from django.core.exceptions import ObjectDoesNotExist
 from django.views.generic import CreateView 
 from django.utils.html import strip_tags
 from django.core.mail import EmailMultiAlternatives
 from django.core.mail import send_mail
 from django.shortcuts import render
-from .email_utils import Command
 from django.http import  HttpResponse
 from django.urls import reverse_lazy
+from imapclient import IMAPClient
 from .models import EnviosEmails
 from .models import Usuario
 import feedparser
@@ -82,7 +83,58 @@ def oi(request):
 
 #TODO tamires, muda esse nome no reverse_lazy para configurar TUDO plmds e apaga essa var. Esse valor no reverse_lazy indica o caminho do urls.py que o html vai tomar ao receber o valor e processá-lo no banco. No entanto, para isso tem a lógica do que foi aprovado ou não, e isso eu deixo em tua mão dps que tu configurar o bendito usuario_form.html para fazer o crud e ajustar o css, html (que possivelmente tu vai fazer modificações) e o javascript. Boa sorte, hahaaha'
 
+def descadastrar_email():
+        # Configurar a conexão IMAP
+        server = IMAPClient('imap.gmail.com')
+        server.login('naoresponda.newsifpb@gmail.com', 'dubzukogeeyyfyyr')
+
+        pessoas_deletadas = []
+        pessoas_nao_deletadas = []
+        
+        #Lista de caixas:
+        # Mailbox Name: INBOX
+        # Mailbox Name: [Gmail]
+        # Mailbox Name: [Gmail]/All Mail
+        # Mailbox Name: [Gmail]/Drafts
+        # Mailbox Name: [Gmail]/Important
+        # Mailbox Name: [Gmail]/Sent Mail
+        # Mailbox Name: [Gmail]/Spam
+        # Mailbox Name: [Gmail]/Starred
+        # Mailbox Name: [Gmail]/Trash
+        caixas = ['INBOX','[Gmail]/Spam']
+        
+        for caixa in caixas:
+        # Buscar na caixa de entrada
+            server.select_folder(caixa)
+            messagens = server.search(['UNSEEN'])
+
+        # Extrair remetentes e excluir usuários da caixa de entrada
+            for msgid, data in server.fetch(messagens, ['ENVELOPE']).items():
+                envelope = data[b'ENVELOPE']
+
+                sender_name = envelope.sender[0].name.decode('utf-8') if envelope.sender[0].name else ""
+                sender_email = envelope.sender[0].mailbox.decode('utf-8') + "@" + envelope.sender[0].host.decode('utf-8')
+
+            # Deletar o usuário com base no e-mail do remetente
+                try:
+                    usuario = Usuario.objects.get(email=sender_email)
+                    usuario.delete()
+                    pessoas_deletadas.append(sender_email)
+                except Usuario.DoesNotExist:
+                    pessoas_nao_deletadas.append(sender_email)
+
+            server.set_flags(messagens, [b'\\Seen'])
+        
+        # Fechar a conexão IMAP
+        server.logout()
+
+        context = {
+            'pessoas_deletadas': pessoas_deletadas,
+            'pessoas_nao_deletadas': pessoas_nao_deletadas
+        }
+        return context
+
 def deletar_usuario(request):
-    command = Command()
-    context = command.handle()
+    context = descadastrar_email()
+
     return render(request, 'polls/deletar_usuarios_emails_n_lidos.html', context)
