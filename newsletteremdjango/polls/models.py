@@ -12,7 +12,7 @@ class Usuario(models.Model):
 
 
 class EnviosEmails(models.Model):
-    resposta = models.CharField(max_length=255)
+    quantidade_noticias = models.IntegerField(verbose_name="Quantidade de noticias")
     data_envio = models.DateTimeField(auto_now_add=True)
     destinatarios = models.ManyToManyField(Usuario, blank=True, related_name="emails")
 

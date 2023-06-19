@@ -12,21 +12,30 @@ from imapclient import IMAPClient
 from .models import EnviosEmails
 from .models import Usuario
 import feedparser
+import datetime
 import time
 
 
-def obter_tempo_inicial():
-    return time.time()
+def obter_tempo_semana_passada():
+    tempo_atual = time.time()
+    uma_semana_atras = tempo_atual - (7 * 24 * 60 * 60)
+    
+    diferenca_horaria = datetime.timedelta(hours=-3)  # Ajuste de 3 horas a menos
+    tempo_ajustado = datetime.datetime.fromtimestamp(uma_semana_atras) + diferenca_horaria
+    uma_semana_atras_ajustado = tempo_ajustado.timestamp()
+    
+    return uma_semana_atras_ajustado
 
 
 def ler_noticias():
+    # valor_controlador = 1683936034.0
     feed_url = 'https://www.ifpb.edu.br/ifpb/pedrasdefogo/noticias/todas-as-noticias-do-campus-pedras-de-fogo/RSS'
     rss = feedparser.parse(feed_url)
     noticias = rss.entries
     noticias_list = []
     for noticia in noticias:
         tempo_de_publicacao = time.mktime(noticia.published_parsed)
-        if tempo_de_publicacao > 1683936034.0:
+        if tempo_de_publicacao > obter_tempo_semana_passada():
             dados_noticia = {
                 'url': noticia['link'],
                 'titulo': noticia['title'],
@@ -35,8 +44,6 @@ def ler_noticias():
                 'descricao': noticia['summary']
             }
             noticias_list.append(dados_noticia)
-
-    tempo_inicial = obter_tempo_inicial()
 
     num_indices = len(noticias_list) 
     context = {'dados': noticias_list, 'num_indices': num_indices}
@@ -56,8 +63,8 @@ def enviar_newletter(request):
         try:
             email.send()
             num_indices = dados_das_noticias['num_indices']  # Obtém o número de índices da resposta do email
-            resposta_bd = f"{num_indices} notícias foram geradas essa semana"  # Cria a resposta para o banco de dados
-            envio_emails = EnviosEmails.objects.create(resposta=resposta_bd)  # Salva a resposta no banco de dados EnviosEmails
+            resposta_bd = num_indices  # Cria a resposta para o banco de dados
+            envio_emails = EnviosEmails.objects.create(quantidade_noticias=resposta_bd)  # Salva a resposta no banco de dados EnviosEmails
 
             envio_emails.destinatarios.set(Usuario.objects.all()) # Cria associações com os destinatários
             return HttpResponse('E-mails enviados com sucesso!')
@@ -67,8 +74,8 @@ def enviar_newletter(request):
 
     else:
         num_indices = dados_das_noticias['num_indices']
-        resposta_bd = f"{num_indices} notícias foram geradas essa semana"  # Cria a resposta para o banco de dados
-        envio_emails = EnviosEmails.objects.create(resposta=resposta_bd)
+        resposta_bd = num_indices  # Cria a resposta para o banco de dados
+        envio_emails = EnviosEmails.objects.create(quantidade_noticias=resposta_bd)
         return HttpResponse('Não há conteúdo essa semana para ser enviado por e-mail. Portanto, o e-mail não foi enviado.')
 
 
