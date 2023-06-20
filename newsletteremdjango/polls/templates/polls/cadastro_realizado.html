@@ -1,0 +1,25 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="{% static 'css/cadastro_realizado.css' %}">
+  <title>Cadastro realizado!</title>
+</head>
+<body>
+
+  <div>
+
+    <h1>Cadastro realizado com sucesso!</h1>
+    <p id="p1">Parabéns! O usuário com endereço de email {{ email }} foi cadastrado na:</p>
+    <strong>
+      <img src="{% static 'imagens/campuspedrasdefogo.png' %}" alt="IFPB - CAMPUS PEDRAS DE FOGO">
+      <p id="p2">Newsletter</p>
+    </strong>
+
+  </div>
+  
+</body>
+</html>

@@ -1,11 +1,11 @@
 from django.template.loader import render_to_string
 from django.core.files.base import ContentFile
 from django.core.exceptions import ObjectDoesNotExist
-from django.views.generic import CreateView 
+from django.views.generic import CreateView, TemplateView
 from django.utils.html import strip_tags
 from django.core.mail import EmailMultiAlternatives
 from django.core.mail import send_mail
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.http import  HttpResponse
 from django.urls import reverse_lazy
 from imapclient import IMAPClient
@@ -14,13 +14,14 @@ from .models import Usuario
 import feedparser
 import datetime
 import time
+from django.utils.decorators import method_decorator
 
 
 def obter_tempo_semana_passada():
     tempo_atual = time.time()
     uma_semana_atras = tempo_atual - (7 * 24 * 60 * 60)
     
-    diferenca_horaria = datetime.timedelta(hours=-3)  # Ajuste de 3 horas a menos
+    diferenca_horaria = datetime.timedelta(hours=3)  # Ajuste de 3 horas a mais
     tempo_ajustado = datetime.datetime.fromtimestamp(uma_semana_atras) + diferenca_horaria
     uma_semana_atras_ajustado = tempo_ajustado.timestamp()
     
@@ -49,6 +50,73 @@ def ler_noticias():
     context = {'dados': noticias_list, 'num_indices': num_indices}
     
     return context
+
+
+
+def descadastrar_email(view_func):
+    def wrapper(request, *args, **kwargs):
+        # Configurar a conexão IMAP
+        server = IMAPClient('imap.gmail.com')
+        server.login('naoresponda.newsifpb@gmail.com', 'dubzukogeeyyfyyr')
+
+        pessoas_deletadas = []
+        pessoas_nao_deletadas = []
+
+        caixas = ['INBOX', '[Gmail]/Spam']
+
+        for caixa in caixas:
+            # Buscar na caixa de entrada
+            server.select_folder(caixa)
+            messagens = server.search(['UNSEEN'])
+
+            # Extrair remetentes e excluir usuários da caixa de entrada
+            for msgid, data in server.fetch(messagens, ['ENVELOPE']).items():
+                envelope = data[b'ENVELOPE']
+
+                sender_name = envelope.sender[0].name.decode('utf-8') if envelope.sender[0].name else ""
+                sender_email = envelope.sender[0].mailbox.decode('utf-8') + "@" + envelope.sender[0].host.decode('utf-8')
+
+                # Deletar o usuário com base no e-mail do remetente
+                try:
+                    usuario = Usuario.objects.get(email=sender_email)
+                    usuario.delete()
+                    pessoas_deletadas.append(sender_email)
+                except Usuario.DoesNotExist:
+                    pessoas_nao_deletadas.append(sender_email)
+
+            server.set_flags(messagens, [b'\\Seen'])
+
+        # Fechar a conexão IMAP
+        server.logout()
+
+        context = {
+            'pessoas_deletadas': pessoas_deletadas,
+            'pessoas_nao_deletadas': pessoas_nao_deletadas
+        }
+
+        request.descadastrar_email_context = context  # Armazene o contexto na requisição para acessá-lo posteriormente
+        return view_func(request, *args, **kwargs)
+
+    return wrapper
+
+class UsuarioCreate(CreateView):
+    model = Usuario
+    fields = '__all__'
+
+    def form_invalid(self, form):
+        if 'email' in form.errors:
+            form.add_error('email', 'Erro: esse email já está cadastrado. Insira um email válido.')
+        return super().form_invalid(form)
+
+    def form_valid(self, form):
+        email = form.cleaned_data['email']
+        self.object = form.save()
+
+        return redirect('polls:cadastro_realizado', email=email)
+
+    @method_decorator(descadastrar_email)
+    def dispatch(self, request, *args, **kwargs):
+        return super().dispatch(request, *args, **kwargs)
     
 def enviar_newletter(request):
     dados_das_noticias = ler_noticias()
@@ -79,69 +147,17 @@ def enviar_newletter(request):
         return HttpResponse('Não há conteúdo essa semana para ser enviado por e-mail. Portanto, o e-mail não foi enviado.')
 
 
+class CadastroRealizadoView(TemplateView):
+    template_name = 'polls/cadastro_realizado.html'
 
-class UsuarioCreate (CreateView):
-    model = Usuario
-    fields ='__all__'
-    success_url = reverse_lazy('polls:oi')
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['email'] = self.kwargs['email']  # Certifique-se de usar 'self.kwargs['email']'
+        return context
 
-def oi(request):
-    return HttpResponse('oi')
 
 #TODO tamires, muda esse nome no reverse_lazy para configurar TUDO plmds e apaga essa var. Esse valor no reverse_lazy indica o caminho do urls.py que o html vai tomar ao receber o valor e processá-lo no banco. No entanto, para isso tem a lógica do que foi aprovado ou não, e isso eu deixo em tua mão dps que tu configurar o bendito usuario_form.html para fazer o crud e ajustar o css, html (que possivelmente tu vai fazer modificações) e o javascript. Boa sorte, hahaaha'
 
-def descadastrar_email():
-        # Configurar a conexão IMAP
-        server = IMAPClient('imap.gmail.com')
-        server.login('naoresponda.newsifpb@gmail.com', 'dubzukogeeyyfyyr')
 
-        pessoas_deletadas = []
-        pessoas_nao_deletadas = []
-        
-        #Lista de caixas:
-        # Mailbox Name: INBOX
-        # Mailbox Name: [Gmail]
-        # Mailbox Name: [Gmail]/All Mail
-        # Mailbox Name: [Gmail]/Drafts
-        # Mailbox Name: [Gmail]/Important
-        # Mailbox Name: [Gmail]/Sent Mail
-        # Mailbox Name: [Gmail]/Spam
-        # Mailbox Name: [Gmail]/Starred
-        # Mailbox Name: [Gmail]/Trash
-        caixas = ['INBOX','[Gmail]/Spam']
-        
-        for caixa in caixas:
-        # Buscar na caixa de entrada
-            server.select_folder(caixa)
-            messagens = server.search(['UNSEEN'])
 
-        # Extrair remetentes e excluir usuários da caixa de entrada
-            for msgid, data in server.fetch(messagens, ['ENVELOPE']).items():
-                envelope = data[b'ENVELOPE']
 
-                sender_name = envelope.sender[0].name.decode('utf-8') if envelope.sender[0].name else ""
-                sender_email = envelope.sender[0].mailbox.decode('utf-8') + "@" + envelope.sender[0].host.decode('utf-8')
-
-            # Deletar o usuário com base no e-mail do remetente
-                try:
-                    usuario = Usuario.objects.get(email=sender_email)
-                    usuario.delete()
-                    pessoas_deletadas.append(sender_email)
-                except Usuario.DoesNotExist:
-                    pessoas_nao_deletadas.append(sender_email)
-
-            server.set_flags(messagens, [b'\\Seen'])
-        
-        # Fechar a conexão IMAP
-        server.logout()
-
-        context = {
-            'pessoas_deletadas': pessoas_deletadas,
-            'pessoas_nao_deletadas': pessoas_nao_deletadas
-        }
-        return context
-
-def deletar_usuario(request):
-    context = descadastrar_email()
-
-    return render(request, 'polls/deletar_usuarios_emails_n_lidos.html', context)
