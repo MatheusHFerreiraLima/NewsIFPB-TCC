@@ -155,9 +155,5 @@ class CadastroRealizadoView(TemplateView):
         context['email'] = self.kwargs['email']  # Certifique-se de usar 'self.kwargs['email']'
         return context
 
-
 #TODO tamires, muda esse nome no reverse_lazy para configurar TUDO plmds e apaga essa var. Esse valor no reverse_lazy indica o caminho do urls.py que o html vai tomar ao receber o valor e processá-lo no banco. No entanto, para isso tem a lógica do que foi aprovado ou não, e isso eu deixo em tua mão dps que tu configurar o bendito usuario_form.html para fazer o crud e ajustar o css, html (que possivelmente tu vai fazer modificações) e o javascript. Boa sorte, hahaaha'
-
-
-
 
