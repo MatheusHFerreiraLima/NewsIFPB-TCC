@@ -1,7 +1,7 @@
+from django.views.generic import CreateView, TemplateView, DeleteView
 from django.template.loader import render_to_string
 from django.core.files.base import ContentFile
 from django.core.exceptions import ObjectDoesNotExist
-from django.views.generic import CreateView, TemplateView
 from django.utils.html import strip_tags
 from django.core.mail import EmailMultiAlternatives
 from django.core.mail import send_mail
@@ -118,6 +118,44 @@ class UsuarioCreate(CreateView):
     def dispatch(self, request, *args, **kwargs):
         return super().dispatch(request, *args, **kwargs)
     
+class CadastroRealizadoView(TemplateView):
+    template_name = 'polls/cadastro_realizado.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['email'] = self.kwargs['email']  # Certifique-se de usar 'self.kwargs['email']'
+        return context
+
+class CancelSuccessView(TemplateView):
+    template_name = 'polls/cancel_success.html'
+
+from django.shortcuts import get_object_or_404
+
+class UsuarioDelete(DeleteView):
+    model = Usuario
+    success_url = reverse_lazy('polls:cancel_success')
+
+    def get_success_url(self):
+        email = get_object_or_404(self.model, pk=self.kwargs['pk']).email
+        messages.success(self.request, f'Inscrição cancelada com sucesso!')
+        return reverse_lazy('polls:cancel_success', kwargs={'email': email})
+
+    def delete(self, request, *args, **kwargs):
+        try:
+            return super().delete(request, *args, **kwargs)
+        except self.model.DoesNotExist:
+            return self.render_to_response(self.get_context_data(not_in_database=True))
+        except Exception as e:
+            return self.render_to_response(self.get_context_data(error_message=f"Ocorreu um erro inesperado: {str(e)}"))
+
+from django.shortcuts import get_object_or_404, redirect, render
+from django.urls import reverse_lazy
+from django.views.generic import DeleteView, TemplateView
+from django.contrib import messages
+
+from .models import Usuario
+
+
 def enviar_newletter(request):
     dados_das_noticias = ler_noticias()
     if dados_das_noticias['dados'] != []:
@@ -146,14 +184,4 @@ def enviar_newletter(request):
         envio_emails = EnviosEmails.objects.create(quantidade_noticias=resposta_bd)
         return HttpResponse('Não há conteúdo essa semana para ser enviado por e-mail. Portanto, o e-mail não foi enviado.')
 
-
-class CadastroRealizadoView(TemplateView):
-    template_name = 'polls/cadastro_realizado.html'
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['email'] = self.kwargs['email']  # Certifique-se de usar 'self.kwargs['email']'
-        return context
-
 #TODO tamires, muda esse nome no reverse_lazy para configurar TUDO plmds e apaga essa var. Esse valor no reverse_lazy indica o caminho do urls.py que o html vai tomar ao receber o valor e processá-lo no banco. No entanto, para isso tem a lógica do que foi aprovado ou não, e isso eu deixo em tua mão dps que tu configurar o bendito usuario_form.html para fazer o crud e ajustar o css, html (que possivelmente tu vai fazer modificações) e o javascript. Boa sorte, hahaaha'
-
