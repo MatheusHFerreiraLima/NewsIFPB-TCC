@@ -1,11 +1,12 @@
+from django.utils.decorators import method_decorator
 from django.views.generic import CreateView, TemplateView, DeleteView
 from django.template.loader import render_to_string
 from django.core.files.base import ContentFile
 from django.core.exceptions import ObjectDoesNotExist
 from django.utils.html import strip_tags
+from django.shortcuts import render, redirect, get_object_or_404
 from django.core.mail import EmailMultiAlternatives
 from django.core.mail import send_mail
-from django.shortcuts import render, redirect
 from django.http import  HttpResponse
 from django.urls import reverse_lazy
 from imapclient import IMAPClient
@@ -14,7 +15,8 @@ from .models import Usuario
 import feedparser
 import datetime
 import time
-from django.utils.decorators import method_decorator
+
+
 
 
 def obter_tempo_semana_passada():
@@ -36,7 +38,7 @@ def ler_noticias():
     noticias_list = []
     for noticia in noticias:
         tempo_de_publicacao = time.mktime(noticia.published_parsed)
-        if tempo_de_publicacao > obter_tempo_semana_passada():
+        if tempo_de_publicacao > 1683936034.0:
             dados_noticia = {
                 'url': noticia['link'],
                 'titulo': noticia['title'],
@@ -112,76 +114,78 @@ class UsuarioCreate(CreateView):
         email = form.cleaned_data['email']
         self.object = form.save()
 
-        return redirect('polls:cadastro_realizado', email=email)
+        return redirect('app:cadastro_realizado', email=email)
 
     @method_decorator(descadastrar_email)
     def dispatch(self, request, *args, **kwargs):
         return super().dispatch(request, *args, **kwargs)
+
     
 class CadastroRealizadoView(TemplateView):
-    template_name = 'polls/cadastro_realizado.html'
+    template_name = 'app/cadastro_realizado.html'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['email'] = self.kwargs['email']  # Certifique-se de usar 'self.kwargs['email']'
+        context['email'] = self.kwargs['email']  
         return context
 
-class CancelSuccessView(TemplateView):
-    template_name = 'polls/cancel_success.html'
 
-from django.shortcuts import get_object_or_404
+class CancelSuccessView(TemplateView):
+    template_name = 'app/cancel_success.html'
+
+
 
 class UsuarioDelete(DeleteView):
     model = Usuario
-    success_url = reverse_lazy('polls:cancel_success')
+    success_url = reverse_lazy('app:cancel_success')
 
     def get_success_url(self):
         email = get_object_or_404(self.model, pk=self.kwargs['pk']).email
-        messages.success(self.request, f'Inscrição cancelada com sucesso!')
-        return reverse_lazy('polls:cancel_success', kwargs={'email': email})
+        return reverse_lazy('app:cancel_success', kwargs={'email': email})
 
-    def delete(self, request, *args, **kwargs):
+    def delete(self, request):
         try:
-            return super().delete(request, *args, **kwargs)
-        except self.model.DoesNotExist:
-            return self.render_to_response(self.get_context_data(not_in_database=True))
+            return super().delete(request)
         except Exception as e:
             return self.render_to_response(self.get_context_data(error_message=f"Ocorreu um erro inesperado: {str(e)}"))
 
-from django.shortcuts import get_object_or_404, redirect, render
-from django.urls import reverse_lazy
-from django.views.generic import DeleteView, TemplateView
-from django.contrib import messages
 
-from .models import Usuario
-
-
-def enviar_newletter(request):
+def enviar_newsletter(request):
     dados_das_noticias = ler_noticias()
     if dados_das_noticias['dados'] != []:
-        destinatarios = Usuario.objects.values_list('email', flat=True)
-        html_content = render_to_string("polls/email.html", dados_das_noticias)
-        text_content = strip_tags(html_content)
+        destinatarios = Usuario.objects.all()
 
-        email = EmailMultiAlternatives('Newsletter IFPB teste', text_content, 'naoresponda.newsifpb@gmail.com', bcc=destinatarios)
-        email.attach_alternative(html_content, 'text/html')
+        for destinatario in destinatarios:
+            html_content = render_to_string("app/email.html", {
+                'dados': dados_das_noticias['dados'],
+                'email': destinatario.email,
+            })
 
-        try:
-            email.send()
-            num_indices = dados_das_noticias['num_indices']  # Obtém o número de índices da resposta do email
-            resposta_bd = num_indices  # Cria a resposta para o banco de dados
-            envio_emails = EnviosEmails.objects.create(quantidade_noticias=resposta_bd)  # Salva a resposta no banco de dados EnviosEmails
+            text_content = strip_tags(html_content)
 
-            envio_emails.destinatarios.set(Usuario.objects.all()) # Cria associações com os destinatários
-            return HttpResponse('E-mails enviados com sucesso!')
-        
-        except Exception as e:
-            return HttpResponse(f'Erro ao enviar e-mails: {str(e)}')
+            email = EmailMultiAlternatives('Newsletter IFPB teste', text_content, 'naoresponda.newsifpb@gmail.com', bcc=[destinatario.email])
+            email.attach_alternative(html_content, 'text/html')
+
+            try:
+                email.send()
+            except Exception as e:
+                return HttpResponse(f'Erro ao enviar e-mails: {str(e)}')
+
+        num_indices = dados_das_noticias['num_indices']
+        resposta_bd = num_indices
+        envio_emails = EnviosEmails.objects.create(quantidade_noticias=resposta_bd)
+        envio_emails.destinatarios.set(destinatarios)
+        return HttpResponse('E-mails enviados com sucesso!')
 
     else:
         num_indices = dados_das_noticias['num_indices']
-        resposta_bd = num_indices  # Cria a resposta para o banco de dados
+        resposta_bd = num_indices
         envio_emails = EnviosEmails.objects.create(quantidade_noticias=resposta_bd)
         return HttpResponse('Não há conteúdo essa semana para ser enviado por e-mail. Portanto, o e-mail não foi enviado.')
+
+
+
+
+
 
 #TODO tamires, muda esse nome no reverse_lazy para configurar TUDO plmds e apaga essa var. Esse valor no reverse_lazy indica o caminho do urls.py que o html vai tomar ao receber o valor e processá-lo no banco. No entanto, para isso tem a lógica do que foi aprovado ou não, e isso eu deixo em tua mão dps que tu configurar o bendito usuario_form.html para fazer o crud e ajustar o css, html (que possivelmente tu vai fazer modificações) e o javascript. Boa sorte, hahaaha'

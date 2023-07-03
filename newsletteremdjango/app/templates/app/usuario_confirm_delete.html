@@ -1,0 +1,27 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="{% static 'css/usuario_confirm_delete.css' %}">
+  <title>Cancelar Inscrição</title>
+</head>
+
+<body>
+  
+    <div class="container">
+        <h1>Cancelar Inscrição</h1>
+        <p>Tem certeza que deseja cancelar a inscrição de <strong>{{ object.email }}</strong> da NewsIFPB?</p>
+        <form method="post" action=".">
+          {% csrf_token %}
+          <input type="submit" value="Confirmar Cancelamento">
+        </form>
+      </div>
+
+</body>
+
+</html>
+

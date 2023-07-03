@@ -6,7 +6,7 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('polls', '0003_alter_usuario_envios_emails'),
+        ('app', '0003_alter_usuario_envios_emails'),
     ]
 
     operations = [
@@ -17,6 +17,6 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='enviosemails',
             name='destinatarios',
-            field=models.ManyToManyField(blank=True, to='polls.usuario'),
+            field=models.ManyToManyField(blank=True, to='app.usuario'),
         ),
     ]

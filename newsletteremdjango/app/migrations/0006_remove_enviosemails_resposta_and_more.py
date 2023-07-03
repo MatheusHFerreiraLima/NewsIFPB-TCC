@@ -6,7 +6,7 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('polls', '0005_alter_enviosemails_destinatarios'),
+        ('app', '0005_alter_enviosemails_destinatarios'),
     ]
 
     operations = [

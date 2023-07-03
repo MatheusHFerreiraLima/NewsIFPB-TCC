@@ -1,0 +1,20 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{% static 'css/cancel_success.css' %}">
+    <title>Inscrição cancelada</title>
+</head>
+<body>
+        <div class="container">
+            <h1>Inscrição cancelada com sucesso!</h1>
+            <p>O usuário <strong>{{ email }}</strong> teve a inscrição cancelada na NewsIFPB definitivamente.</p>
+            <p>Deseja cadastrar de novo?</p>
+            <a href="{% url 'app:create' %}" class="btn">Cadastrar Usuário</a>
+        </div>
+
+</body>
+</html>

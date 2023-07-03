@@ -26,7 +26,7 @@ class Migration(migrations.Migration):
             name='Usuario',
             fields=[
                 ('email', models.EmailField(max_length=254, primary_key=True, serialize=False)),
-                ('envios_emails', models.ManyToManyField(to='polls.enviosemails')),
+                ('envios_emails', models.ManyToManyField(to='app.enviosemails')),
             ],
         ),
     ]

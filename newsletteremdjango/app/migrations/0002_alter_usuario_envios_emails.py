@@ -6,13 +6,13 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('polls', '0001_initial'),
+        ('app', '0001_initial'),
     ]
 
     operations = [
         migrations.AlterField(
             model_name='usuario',
             name='envios_emails',
-            field=models.ManyToManyField(null=True, to='polls.enviosemails'),
+            field=models.ManyToManyField(null=True, to='app.enviosemails'),
         ),
     ]
