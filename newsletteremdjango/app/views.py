@@ -16,9 +16,6 @@ import feedparser
 import datetime
 import time
 
-
-
-
 def obter_tempo_semana_passada():
     tempo_atual = time.time()
     uma_semana_atras = tempo_atual - (7 * 24 * 60 * 60)
@@ -29,7 +26,6 @@ def obter_tempo_semana_passada():
     
     return uma_semana_atras_ajustado
 
-
 def ler_noticias():
     # valor_controlador = 1683936034.0
     feed_url = 'https://www.ifpb.edu.br/ifpb/pedrasdefogo/noticias/todas-as-noticias-do-campus-pedras-de-fogo/RSS'
@@ -38,7 +34,7 @@ def ler_noticias():
     noticias_list = []
     for noticia in noticias:
         tempo_de_publicacao = time.mktime(noticia.published_parsed)
-        if tempo_de_publicacao > 1683936034.0:
+        if tempo_de_publicacao > obter_tempo_semana_passada():
             dados_noticia = {
                 'url': noticia['link'],
                 'titulo': noticia['title'],
@@ -182,10 +178,5 @@ def enviar_newsletter(request):
         resposta_bd = num_indices
         envio_emails = EnviosEmails.objects.create(quantidade_noticias=resposta_bd)
         return HttpResponse('Não há conteúdo essa semana para ser enviado por e-mail. Portanto, o e-mail não foi enviado.')
-
-
-
-
-
 
 #TODO tamires, muda esse nome no reverse_lazy para configurar TUDO plmds e apaga essa var. Esse valor no reverse_lazy indica o caminho do urls.py que o html vai tomar ao receber o valor e processá-lo no banco. No entanto, para isso tem a lógica do que foi aprovado ou não, e isso eu deixo em tua mão dps que tu configurar o bendito usuario_form.html para fazer o crud e ajustar o css, html (que possivelmente tu vai fazer modificações) e o javascript. Boa sorte, hahaaha'
