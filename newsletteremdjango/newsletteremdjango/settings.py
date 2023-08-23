@@ -36,6 +36,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    
 ]
 
 MIDDLEWARE = [
@@ -102,6 +103,7 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/4.2/topics/i18n/
 
+
 LANGUAGE_CODE = 'pt-br'
 
 TIME_ZONE = 'America/Sao_Paulo'
@@ -135,3 +137,4 @@ EMAIL_USE_TLS= True
 EMAIL_PORT= 587
 EMAIL_HOST='smtp.gmail.com'
 DEFAULT_FROM_EMAIL="naoresponda.newsifpb@gmail.com"
+

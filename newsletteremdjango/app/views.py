@@ -27,14 +27,14 @@ def obter_tempo_semana_passada():
     return uma_semana_atras_ajustado
 
 def ler_noticias():
-    # valor_controlador = 1683936034.0
+    # valor_controlador = 1683936034.0 ou 1688507480.0
     feed_url = 'https://www.ifpb.edu.br/ifpb/pedrasdefogo/noticias/todas-as-noticias-do-campus-pedras-de-fogo/RSS'
     rss = feedparser.parse(feed_url)
     noticias = rss.entries
     noticias_list = []
     for noticia in noticias:
         tempo_de_publicacao = time.mktime(noticia.published_parsed)
-        if tempo_de_publicacao > obter_tempo_semana_passada():
+        if tempo_de_publicacao > 1688507480.0:
             dados_noticia = {
                 'url': noticia['link'],
                 'titulo': noticia['title'],
@@ -146,6 +146,7 @@ class UsuarioDelete(DeleteView):
             return self.render_to_response(self.get_context_data(error_message=f"Ocorreu um erro inesperado: {str(e)}"))
 
 
+
 def enviar_newsletter(request):
     dados_das_noticias = ler_noticias()
     if dados_das_noticias['dados'] != []:
@@ -179,4 +180,4 @@ def enviar_newsletter(request):
         envio_emails = EnviosEmails.objects.create(quantidade_noticias=resposta_bd)
         return HttpResponse('Não há conteúdo essa semana para ser enviado por e-mail. Portanto, o e-mail não foi enviado.')
 
-#TODO tamires, muda esse nome no reverse_lazy para configurar TUDO plmds e apaga essa var. Esse valor no reverse_lazy indica o caminho do urls.py que o html vai tomar ao receber o valor e processá-lo no banco. No entanto, para isso tem a lógica do que foi aprovado ou não, e isso eu deixo em tua mão dps que tu configurar o bendito usuario_form.html para fazer o crud e ajustar o css, html (que possivelmente tu vai fazer modificações) e o javascript. Boa sorte, hahaaha'
+
