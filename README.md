@@ -27,5 +27,5 @@ no terminal do Visual Studio do Windows:
 
 Depois configura o Banco de dados no sqlite com um manage.py migrate e manage.py makemigrations
 
-Lembre-se de mudar a senha e o email dos settings.py. A senha é intransferível.
+
 
