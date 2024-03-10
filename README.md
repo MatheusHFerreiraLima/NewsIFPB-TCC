@@ -1,6 +1,3 @@
-# python-tccparte2
- tentando fazer uma parte 2 aqui
-
 comandos básicos necessários para caso o clone do repositório não dê certo. aí você só copia e cola os comandos e os arquivos:
 
 Tambem exclua o .venv dos seus arquivos se você clonou o repositório e crie um novo
