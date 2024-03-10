@@ -130,11 +130,5 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # Email
 
-EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST_USER='naoresponda.newsifpb@gmail.com'
-EMAIL_HOST_PASSWORD='dubzukogeeyyfyyr'
-EMAIL_USE_TLS= True
-EMAIL_PORT= 587
-EMAIL_HOST='smtp.gmail.com'
-DEFAULT_FROM_EMAIL="naoresponda.newsifpb@gmail.com"
+
 
