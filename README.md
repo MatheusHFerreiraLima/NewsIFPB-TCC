@@ -1,3 +1,7 @@
+TCC do IFPB em Pedras de Fogo. Feito por Matheus Henrique e Tamires Santana. 
+Obrigado a você que veio me visitar, meu sentimento de gratidão do passado aflora. Obrigado incessantemente a Tamires, por ter levado esse projeto comigo. 
+Obrigado ao nosso orientador, Anderson Bráulio. E obrigado a todos os meus amigos nessa jornada, nessa instituição.
+
 comandos básicos necessários para caso o clone do repositório não dê certo. aí você só copia e cola os comandos e os arquivos:
 
 Tambem exclua o .venv dos seus arquivos se você clonou o repositório e crie um novo
